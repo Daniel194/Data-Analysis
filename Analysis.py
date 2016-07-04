@@ -8,16 +8,23 @@ import time
 date, bid, ask = np.loadtxt('GBPUSD1d.txt', unpack=True, delimiter=',',
                             converters={0: mdates.strpdate2num('%Y%m%d%H%M%S')})
 
-def precentChange(strartPoint, currentPoint):
-    return ((currentPoint-strartPoint)/strartPoint)*100
+avgLine = ((bid+ask)/2)
 
-def patternFinder():
-    avgLine = ((bid+ask)/2)
+patternAr = []
+performanceAr = []
+
+def precentChange(strartPoint, currentPoint):
+    return ((currentPoint-strartPoint)/abs(strartPoint))*100
+
+def patternStorage():
+    patStartTime = time.time()
+
     x = len(avgLine)-30
 
     y = 11
 
     while y < x:
+        pattern = []
         p1 = precentChange(avgLine[y-10], avgLine[y-9])
         p2 = precentChange(avgLine[y-10], avgLine[y-8])
         p3 = precentChange(avgLine[y-10], avgLine[y-7])
@@ -32,14 +39,61 @@ def patternFinder():
         outcomeRange = avgLine[y+20:y+30]
         currentPoint = avgLine[y]
 
-        print reduce(lambda x, y: x+y, outcomeRange)/ len(outcomeRange)
-        print currentPoint
-        print '___________'
+        try:
+            avgOutCome = reduce(lambda x, y: x+y, outcomeRange)/ len(outcomeRange)
+        except, Exception e:
+            print str(e)
+            avgOutCome = 0
 
-        print p1,p2,p3,p4,p5,p6,p7,p8,p9,p10
+        featureOutCome = precentChange(currentPoint, avgOutCome)
+        pattern.append(p1)
+        pattern.append(p2)
+        pattern.append(p3)
+        pattern.append(p4)
+        pattern.append(p5)
+        pattern.append(p6)
+        pattern.append(p7)
+        pattern.append(p8)
+        pattern.append(p9)
+        pattern.append(p10)
+
+        patternAr.append(pattern)
+        performanceAr.append(featureOutCome)
+
         y += 1
-        time.sleep(5555)
 
+    patEndTime = time.time()
+    print len(poatternAr)
+    print len(performanceAr)
+    print 'Pattern storage took :', patEndTime - patStartTime, ' seconds'
+
+
+def patterRecognition():
+    patForRec = []
+
+    cp1 = percentChange(avgLine[-11],avgLine[-10])
+    cp2 = percentChange(avgLine[-11],avgLine[-9])
+    cp3 = percentChange(avgLine[-11],avgLine[-8])
+    cp4 = percentChange(avgLine[-11],avgLine[-7])
+    cp5 = percentChange(avgLine[-11],avgLine[-6])
+    cp6 = percentChange(avgLine[-11],avgLine[-5])
+    cp7 = percentChange(avgLine[-11],avgLine[-4])
+    cp8 = percentChange(avgLine[-11],avgLine[-3])
+    cp9 = percentChange(avgLine[-11],avgLine[-2])
+    cp10 = percentChange(avgLine[-11],avgLine[-1])
+
+    patForRec.append(cp1)
+    patForRec.append(cp2)
+    patForRec.append(cp3)
+    patForRec.append(cp4)
+    patForRec.append(cp5)
+    patForRec.append(cp6)
+    patForRec.append(cp7)
+    patForRec.append(cp8)
+    patForRec.append(cp9)
+    patForRec.append(cp10)
+
+    print patForRec
 
 
 def graphRawFX():
