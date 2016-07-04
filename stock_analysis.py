@@ -5,6 +5,9 @@ import matplotlib.dates as mdates
 import numpy as np
 import time
 
+
+totalStart = time.time()
+
 date, bid, ask = np.loadtxt('GBPUSD1d.txt', unpack=True, delimiter=',',
                             converters={0: mdates.strpdate2num('%Y%m%d%H%M%S')})
 
@@ -12,9 +15,11 @@ avgLine = ((bid+ask)/2)
 
 patternAr = []
 performanceAr = []
+patForRec = []
 
 def precentChange(strartPoint, currentPoint):
     return ((currentPoint-strartPoint)/abs(strartPoint))*100
+
 
 def patternStorage():
     patStartTime = time.time()
@@ -68,8 +73,7 @@ def patternStorage():
     print 'Pattern storage took :', patEndTime - patStartTime, ' seconds'
 
 
-def patterRecognition():
-    patForRec = []
+def currentPattern():
 
     cp1 = percentChange(avgLine[-11],avgLine[-10])
     cp2 = percentChange(avgLine[-11],avgLine[-9])
@@ -96,6 +100,40 @@ def patterRecognition():
     print patForRec
 
 
+def patternRecognition():
+    for eachPattern in patternAr:
+        sim1 = 100.00 - abs(percentChange(eachPattern[0], patForRec[0]))
+        sim2 = 100.00 - abs(percentChange(eachPattern[1], patForRec[1]))
+        sim3 = 100.00 - abs(percentChange(eachPattern[2], patForRec[2]))
+        sim4 = 100.00 - abs(percentChange(eachPattern[3], patForRec[3]))
+        sim5 = 100.00 - abs(percentChange(eachPattern[4], patForRec[4]))
+        sim6 = 100.00 - abs(percentChange(eachPattern[5], patForRec[5]))
+        sim7 = 100.00 - abs(percentChange(eachPattern[6], patForRec[6]))
+        sim8 = 100.00 - abs(percentChange(eachPattern[7], patForRec[7]))
+        sim9 = 100.00 - abs(percentChange(eachPattern[8], patForRec[8]))
+        sim10 = 100.00 - abs(percentChange(eachPattern[9], patForRec[9]))
+
+        howSim = (sim1 + sim2 + sim3 + sim4 + sim5 + sim6 + sim7 + sim8 + sim9 + sim10)/10.00
+
+        if howSim > 70:
+            patdex = poatternAr.index(eachPattern)
+
+            print '############################'
+            print '############################'
+            print patForRec
+            print '======================='
+            print eachPattern
+            print '-----------------------'
+            print 'predicted outcome', performanceAr[patdex]
+            xp = [1,2,3,4,5,6,7,8,9,10]
+            fig = plt.figure()
+            plt.plot(xp, patForReac)
+            plt.plot(xp, eachPattern)
+            plt.show()
+            print '############################'
+            print '############################'
+
+
 def graphRawFX():
 
     fig = plt.figure(figsize=(10, 7))
@@ -120,4 +158,10 @@ def graphRawFX():
 
 
 if __name__ == "__main__":
-    graphRawFX()
+    patternStorage()
+    currentPattern()
+    patternRecognition()
+
+    totalTime = timet.time() - totalStart
+
+    print 'Entire processing time took:', totalTime, ' seconds'
