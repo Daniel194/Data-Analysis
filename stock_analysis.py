@@ -10,23 +10,25 @@ totalStart = time.time()
 date, bid, ask = np.loadtxt('GBPUSD1d.txt', unpack=True, delimiter=',',
                             converters={0: mdates.strpdate2num('%Y%m%d%H%M%S')})
 
-avgLine = ((bid + ask) / 2)
-
-patternAr = []
-performanceAr = []
-patForRec = []
-
 
 def percentChange(strartPoint, currentPoint):
-    return ((currentPoint - strartPoint) / abs(strartPoint)) * 100
+    try:
+        x = ((float(currentPoint) - strartPoint) / abs(strartPoint)) * 100
+
+        if x == 0:
+            return 0.00000000001
+        else:
+            return x
+    except:
+        return 0.00000000001
 
 
 def patternStorage():
     patStartTime = time.time()
 
-    x = len(avgLine) - 30
+    x = len(avgLine) - 60
 
-    y = 11
+    y = 31
 
     while y < x:
         pattern = []
@@ -154,7 +156,18 @@ def graphRawFX():
     plt.show()
 
 
-if __name__ == "__main__":
+dateLength = int(bid.shape[0])
+
+toWath = 100
+
+while toWath < dateLength:
+    avgLine = ((bid + ask) / 2)
+    avgLine = avgLine[:toWath]
+
+    patternAr = []
+    performanceAr = []
+    patForRec = []
+
     patternStorage()
     currentPattern()
     patternRecognition()
@@ -162,3 +175,7 @@ if __name__ == "__main__":
     totalTime = time.time() - totalStart
 
     print 'Entire processing time took:', totalTime, ' seconds'
+
+    moveon = raw_input('Press ENTER to continue')
+
+    toWath += 1
