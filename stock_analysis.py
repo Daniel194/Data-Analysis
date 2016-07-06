@@ -101,6 +101,10 @@ def currentPattern():
 
 
 def patternRecognition():
+
+    patFound = 0;
+    plotPatAr = [];
+
     for eachPattern in patternAr:
         sim1 = 100.00 - abs(percentChange(eachPattern[0], patForRec[0]))
         sim2 = 100.00 - abs(percentChange(eachPattern[1], patForRec[1]))
@@ -118,20 +122,30 @@ def patternRecognition():
         if howSim > 70:
             patdex = patternAr.index(eachPattern)
 
-            print '############################'
-            print '############################'
-            print patForRec
-            print '======================='
-            print eachPattern
-            print '-----------------------'
-            print 'predicted outcome', performanceAr[patdex]
+            patFound = 1
+
             xp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-            fig = plt.figure()
-            plt.plot(xp, patForRec)
-            plt.plot(xp, eachPattern)
-            plt.show()
-            print '############################'
-            print '############################'
+            plotPatAr.append(eachPattern)
+
+    if patFound == 1:
+        fig = plt.figure(figsize=(10,6))
+
+        for eachPatt in plotPatAr:
+            futurePoints = patternAr.index(eachPatt)
+
+            if performanceAr[futurePoints] > patForRec[29]:
+                pcolor = "#24BC00"
+            else:
+                pcolor = "#D40000"
+
+            plt.plot(xp, eachPatt)
+            plt.scatter(35, performanceAr[futurePoints],c=pcolor,alpha=.3)
+
+
+        plt.plot(xp, patForRec,'#54FFF7', linewidtg = 3)
+        plt.grid(True)
+        plt.title('Pattern Recognition')
+        plt.show()
 
 
 def graphRawFX():
@@ -158,7 +172,7 @@ def graphRawFX():
 
 dateLength = int(bid.shape[0])
 
-toWath = 100
+toWath = 37000
 
 while toWath < dateLength:
     avgLine = ((bid + ask) / 2)
