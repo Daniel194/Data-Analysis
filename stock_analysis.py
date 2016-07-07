@@ -101,7 +101,7 @@ def currentPattern():
 
 
 def patternRecognition():
-
+    predictedOutcomesAr = []
     patFound = 0;
     plotPatAr = [];
 
@@ -127,25 +127,51 @@ def patternRecognition():
             xp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             plotPatAr.append(eachPattern)
 
+    predArray = []
+
     if patFound == 1:
-        fig = plt.figure(figsize=(10,6))
+        #fig = plt.figure(figsize=(10,6))
 
         for eachPatt in plotPatAr:
             futurePoints = patternAr.index(eachPatt)
 
             if performanceAr[futurePoints] > patForRec[29]:
                 pcolor = "#24BC00"
+                predArray.append(1.000)
             else:
+                predArray.append(-1.000)
                 pcolor = "#D40000"
 
-            plt.plot(xp, eachPatt)
-            plt.scatter(35, performanceAr[futurePoints],c=pcolor,alpha=.3)
 
+            predictedOutcomesAr.append(performanceAr[futurePoints])
 
-        plt.plot(xp, patForRec,'#54FFF7', linewidtg = 3)
-        plt.grid(True)
-        plt.title('Pattern Recognition')
-        plt.show()
+        realOutcomeRange = allData[toWath+20:toWath+30]
+        realAvgOutcome = reduce(lambda x, y: x + y, realOutcomeRange) / len(realOutcomeRange)
+        realMovement = percentChange(allData[toWath], realAvgOutcome)
+        predicteddAvgOutcome = reduce(lambda x, y: x + y, predictedOutcomesAr) / len(predictedOutcomesAr)
+
+        print predArray
+        predictionAverage = reduce(lambda x, y: x + y, predArray) / len(predArray)
+
+        print predictionAverage
+
+        if predictionAverage < 0:
+            print 'drop predicted'
+            print patForRec[29]
+            print realMovement
+            if realMovement < patForRec[29]:
+                accurayArray.append(100)
+            else:
+                accurayArray.append(0)
+
+        if predictionAverage > 0:
+            print 'rise predicted'
+            print patForRec[29]
+            print realMovement
+            if realMovement > patForRec[29]:
+                accurayArray.append(100)
+            else:
+                accurayArray.append(0)
 
 
 def graphRawFX():
@@ -173,10 +199,14 @@ def graphRawFX():
 dateLength = int(bid.shape[0])
 
 toWath = 37000
+allData = ((bid+ask)/2)
+
+
+accurayArray = []
+samps = 0;
 
 while toWath < dateLength:
-    avgLine = ((bid + ask) / 2)
-    avgLine = avgLine[:toWath]
+    avgLine = allData[:toWath]
 
     patternAr = []
     performanceAr = []
@@ -191,5 +221,7 @@ while toWath < dateLength:
     print 'Entire processing time took:', totalTime, ' seconds'
 
     moveon = raw_input('Press ENTER to continue')
-
+    samps += 1
     toWath += 1
+    accurayAverage = reduce(lambda x, y: x + y, accurayArray) / len(accurayArray)
+    print 'Backtestd Accuracy is', str(accurayArray) + '%  after', samps, 'samples'
