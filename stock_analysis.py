@@ -102,8 +102,8 @@ def currentPattern():
 
 def patternRecognition():
     predictedOutcomesAr = []
-    patFound = 0;
-    plotPatAr = [];
+    patFound = 0
+    plotPatAr = []
 
     for eachPattern in patternAr:
         sim1 = 100.00 - abs(percentChange(eachPattern[0], patForRec[0]))
@@ -130,7 +130,7 @@ def patternRecognition():
     predArray = []
 
     if patFound == 1:
-        #fig = plt.figure(figsize=(10,6))
+        # fig = plt.figure(figsize=(10,6))
 
         for eachPatt in plotPatAr:
             futurePoints = patternAr.index(eachPatt)
@@ -142,10 +142,9 @@ def patternRecognition():
                 predArray.append(-1.000)
                 pcolor = "#D40000"
 
-
             predictedOutcomesAr.append(performanceAr[futurePoints])
 
-        realOutcomeRange = allData[toWath+20:toWath+30]
+        realOutcomeRange = allData[toWath + 20:toWath + 30]
         realAvgOutcome = reduce(lambda x, y: x + y, realOutcomeRange) / len(realOutcomeRange)
         realMovement = percentChange(allData[toWath], realAvgOutcome)
         predicteddAvgOutcome = reduce(lambda x, y: x + y, predictedOutcomesAr) / len(predictedOutcomesAr)
@@ -199,11 +198,10 @@ def graphRawFX():
 dateLength = int(bid.shape[0])
 
 toWath = 37000
-allData = ((bid+ask)/2)
-
+allData = ((bid + ask) / 2)
 
 accurayArray = []
-samps = 0;
+samps = 0
 
 while toWath < dateLength:
     avgLine = allData[:toWath]
