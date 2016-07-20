@@ -16,10 +16,26 @@ def best_fit_slope_and_intercepte(xs, ys):
     return m, b
 
 
+def square_error(ys_origin, ys_line):
+    return sum((ys_line - ys_origin) ** 2)
+
+
+def coefficient_of_determination(ys_orig, ys_line):
+    y_mean_line = [mean(ys_orig) for y in ys_orig]
+    square_error_regr = square_error(ys_orig, ys_line)
+    square_error_y_mean = square_error(ys_orig, y_mean_line)
+
+    return 1 - (square_error_regr / square_error_y_mean)
+
+
 m, b = best_fit_slope_and_intercepte(xs, ys)
 
 # y = m * x + b
 regression_line = [m * x + b for x in xs]
+
+r_square = coefficient_of_determination(ys, regression_line)
+
+print(r_square)
 
 predict_x = 8
 predict_y = m * predict_x + b
