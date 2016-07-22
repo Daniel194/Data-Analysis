@@ -15,4 +15,19 @@ def k_nearest_neighbors(data, predict, k=3):
     if len(data) >= k:
         warnings.warn('K is set to a value less than total voting groups !')
 
+    distances = []
 
+    for group in data:
+        for feature in data[group]:
+            euclidian_distance = np.linalg.norm(np.array(feature) - np.array(predict))
+            distances.append([euclidian_distance, group])
+
+    votes = [i[1] for i in sorted(distances)[:k]]
+    vote_result = Counter(votes).most_common(1)[0][0]
+
+    return vote_result
+
+
+result = k_nearest_neighbors(dataset, new_features, k=3)
+
+print(result)
