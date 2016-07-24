@@ -67,7 +67,7 @@ class Support_Vector_Machine:
                 if w[0] < 0:
                     optimized = True
                 else:
-                    w -= step
+                    w = w - step
 
             norms = sorted([n for n in opt_dict])
             opt_choice = opt_dict[norms[0]]
@@ -81,4 +81,40 @@ class Support_Vector_Machine:
         # sign ( x.w + b )
         classification = np.sign(np.dot(np.array(features), self.w) + self.b)
 
+        if classification != 0 and self.visualization:
+            self.ax.scatter(features[0], features[1], s=200, marker='*', c=self.colors[classification])
+
         return classification
+
+    def vizualize(self):
+        [[self.ax.scatter(x[0], x[1], s=100, color=self.colors[i]) for x in data_dict[i]] for i in data_dict]
+
+        def hyperplane(x, w, b, v):
+            return (-w[0] * x - b + v) / w[1]
+
+        data_range = (self.min_feature_value * 0.9, self.max_feature_value * 1.1)
+        hyp_x_min = data_range[0]
+        hyp_x_max = data_range[1]
+
+        psv1 = hyperplane(hyp_x_min, self.w, self.b, 1)
+        psv2 = hyperplane(hyp_x_max, self.w, self.b, 1)
+
+        self.ax.plot([hyp_x_min, hyp_x_max], [psv1, psv2])
+
+        nsv1 = hyperplane(hyp_x_min, self.w, self.b, -1)
+        nsv2 = hyperplane(hyp_x_max, self.w, self.b, -1)
+
+        self.ax.plot([hyp_x_min, hyp_x_max], [nsv1, nsv2])
+
+        db1 = hyperplane(hyp_x_min, self.w, self.b, 0)
+        db2 = hyperplane(hyp_x_max, self.w, self.b, 0)
+
+        self.ax.plot([hyp_x_min, hyp_x_max], [db1, db2])
+
+        plt.show()
+
+
+svm = Support_Vector_Machine()
+
+svm.fit(data=data_dict)
+svm.vizualize()
