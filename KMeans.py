@@ -1,35 +1,44 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import style
-from sklearn.cluster import KMeans
+import numpy as np
 
 style.use('ggplot')
 
-x = [1, 5, 1.5, 8, 1, 9]
-y = [2, 8, 1.8, 8, 0.6, 11]
+X = np.array([[1, 2], [1.5, 1.8], [5, 8], [8, 8], [1, 0.6], [9, 11]])
 
-plt.scatter(x, y)
+colors = 10 * ["g.", "r.", "c.", "b.", "k."]
+
+plt.scatter(X[:, 0], X[:, 1], s=150)
 plt.show()
 
-X = np.array([[1, 2], [5, 8], [1.5, 1.8], [8, 8], [1, 0.6], [9, 1]])
 
-kmeans = KMeans(n_clusters=2)
+class K_means:
+    def __init__(self, k=2, tolerance=0.001, max_iter=300):
+        self.k = k
+        self.tolerance = tolerance
+        self.max_iter = max_iter
 
-kmeans.fit(X)
+    def predict(self, data):
+        self.centroids = {}
 
-centroids = kmeans.cluster_centers_
+        for i in range(self.k):
+            self.centroids[i] = data[i]
 
-labels = kmeans.labels_
+        for i in range(self.max_iter):
+            self.clasifications = {}
 
-print(centroids)
-print(labels)
+            for i in range(self.k):
+                self.clasifications[i] = []
 
-colors = ['g.', 'r.']
+            for featureset in X:
+                distances = [np.linalg.norm(featureset - self.centroids[centroid]) for centroid in self.centroids]
+                classification = distances.index(min(distances))
+                self.clasifications[classification].append(featureset)
 
-for i in range(len(X)):
-    print("coordinate:", X[i], " labels:", labels[i])
-    plt.plot(X[i][0], X[i][1], colors[labels[i]], markersize=10)
+            prev_centroids = dict(self.centroids)
 
-plt.scatter(centroids[:, 0], centroids[:, 1], marker='x', s=150, linewidths=5, zorder=10)
+            for classification in self.clasifications:
+                self.centroids[classification] = np.average(self.clasifications[classification], axis=0)
 
-plt.show()
+    def fit(self, data):
+        pass
