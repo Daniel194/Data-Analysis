@@ -1,12 +1,10 @@
 import tensorflow as tf
 
+x1 = tf.constant(5)
 
-hello = tf.constant('Hello, TensorFlow!')
-sess = tf.Session()
-print(sess.run(hello))
+x2 = tf.constant(6)
 
-a = tf.constant(10)
+result = tf.mul(x1, x2)
 
-b = tf.constant(32)
-
-print(sess.run(a + b))
+with tf.Session() as sess:
+    print(sess.run(result))
